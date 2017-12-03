@@ -4,6 +4,10 @@ Plots ZT vs. b and locate measurement data on the plot.
 
 This function accepts measured thermoelectric data and places it on the maximum ZT vs. b map. The load line for the measured data against maximum ZT vs. b is also shown. 
 
+This script follows the general procedure published in
+"Transport property analysis method for thermoelectric materials: material quality factor and the effective mass model"
+SD Kang, GJ Snyder - arXiv preprint arXiv:1710.06896, 2017
+
 ## Inputs
 
 The program takes measured thermoelectric quantities being either
@@ -52,10 +56,6 @@ Figure 5: Thermal conductivity vs. b
 Figure 6: Lorenz number vs. b
 
 ![alt text](https://image.ibb.co/f3DEPb/fig6.png)
-
-This script follows the general procedure published in
-"Transport property analysis method for thermoelectric materials: material quality factor and the effective mass model"
-SD Kang, GJ Snyder - arXiv preprint arXiv:1710.06896, 2017
 
 This function is written by
 
