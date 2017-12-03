@@ -5,8 +5,9 @@ Plots ZT vs. b and locate measurement data on the plot.
 This function accepts measured thermoelectric data and places it on the maximum ZT vs. b map. The load line for the measured data against maximum ZT vs. b is also shown. 
 
 This script follows the general procedure published in
-"Transport property analysis method for thermoelectric materials: material quality factor and the effective mass model"
-SD Kang, GJ Snyder - arXiv preprint arXiv:1710.06896, 2017
+
+**["Transport property analysis method for thermoelectric materials: material quality factor and the effective mass model"](https://arxiv.org/abs/1710.06896)
+SD Kang and GJ Snyder - arXiv preprint arXiv:1710.06896, 2017**
 
 ## Inputs
 
