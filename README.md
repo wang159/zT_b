@@ -19,7 +19,7 @@ The program takes measured thermoelectric quantities being either
 Notice that ZT and Thermal conductivity cannot be given to the program at the same time. 
 The program will use one and calculate the other.
 
-For details, see "Input parameters from experimental measurements" section below
+![alt text](https://preview.ibb.co/g9gXcw/input_param.png)
 
 ## Method synopsis
 
