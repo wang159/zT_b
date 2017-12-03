@@ -1,18 +1,18 @@
 function zt_vs_b()
-%zt_vs_b Plots ZT vs. b and locate measurement data on the plot.
+%zt_vs_b Plots zT vs. b and locate measurement data on the plot.
 %
 %   This function accepts measured thermoelectric data and places it on the
-%   maximum ZT vs. b map. The load line for the measured data against 
-%   maximum ZT vs. b is also shown. 
+%   maximum zT vs. b map. The load line for the measured data against 
+%   maximum zT vs. b is also shown. 
 %   -----------------------------------------------------------------------
 %   Inputs
 %
 %   The program takes measured thermoelectric quantities being either
-%   1. Seebeck, Resistivity, and ZT
+%   1. Seebeck, Resistivity, and zT
 %   2. Seebeck, Resistivity, and Total Thermal Conductivity
 %   3. Seebeck, Resistivity, and Lattice Thermal Conductivity
 %   
-%   Notice that ZT and Thermal conductivity cannot be given to the program at the same time. 
+%   Notice that zT and Thermal conductivity cannot be given to the program at the same time. 
 %   The program will use one and calculate the other.
 %
 %   For details, see "Input parameters from experimental measurements" section below
@@ -23,15 +23,15 @@ function zt_vs_b()
 %      band model. 
 %   2. Using the given resistivity and the determined Fermi level, the resistivity and electronic 
 %      thermal conductivity at different Fermi energies are calculated.
-%   3. Using the given ZT or thermal conductivity, all the rest thermoelectric quantities of interest
+%   3. Using the given zT or thermal conductivity, all the rest thermoelectric quantities of interest
 %      can be calculated.
-%   4. Vary the lattice thermal conductivity and locate the optimal Fermi energy that maximize the ZT
-%      for each lattice thermal conductivity value. Covert this into a ZT|max vs. b curve.
+%   4. Vary the lattice thermal conductivity and locate the optimal Fermi energy that maximize the zT
+%      for each lattice thermal conductivity value. Covert this into a zT|max vs. b curve.
 %   -----------------------------------------------------------------------
 %   Outputs
 %
-%   Figure #1: ZT|_{max} vs. b_l
-%   Figure #2: ZT|_{max} vs. b_total
+%   Figure #1: zT|_{max} vs. b_l
+%   Figure #2: zT|_{max} vs. b_total
 %   Figure #3: Seebeck coefficient vs. b
 %   Figure #4: Electrical resistivity vs. b
 %   Figure #5: Thermal conductivity vs. b
@@ -55,8 +55,8 @@ T             = 300; % (K) Temperature
 seebeck_coeff = 100e-6; % (V/K) Seebeck coefficient
 resistivity   = 1e-3; % (Ohm-cm) Electrical resistivity
 
-% Either specify ZT or thermal conductivity, NEVER both
-ZT            = []; % Thermoelectric Figure of Merit
+% Either specify zT or thermal conductivity, NEVER both
+zT            = []; % Thermoelectric Figure of Merit
 
 kappa_option  = 'lattice'; % ('lattice'/'total') use either lattice thermal conductivity or total thermal conductivity
 kappa         = 0.5; % (W/K-m) Thermal conductivity (total or lattice)
@@ -79,8 +79,8 @@ h  = 4.135667e-15 ; % (eV-s) Planck constant
 kb = 8.617e-5     ; % (eV/K) Boltzmann constant
 
 %% Preparations and pre-check
-if isempty(ZT) && isempty(kappa) || ~isempty(ZT) && ~isempty(kappa)
-    error('Must specifiy either the ZT or the thermal conductivity, but never both.');
+if isempty(zT) && isempty(kappa) || ~isempty(zT) && ~isempty(kappa)
+    error('Must specifiy either the zT or the thermal conductivity, but never both.');
 end
 
 seebeck_coeff = abs(seebeck_coeff); % Take the absolute value of Seebeck coefficient.
@@ -88,7 +88,7 @@ seebeck_coeff = abs(seebeck_coeff); % Take the absolute value of Seebeck coeffic
 if resistivity <= 0; error('Resistivity must be more than zero'); end
 if T <= 0; error('T must be more than zero'); end
 if ~isempty(kappa); if kappa <= 0; error('kappa must be more than zero'); end; end
-if ~isempty(ZT); if ZT <= 0; error('ZT must be more than zero'); end; end
+if ~isempty(zT); if zT <= 0; error('zT must be more than zero'); end; end
  
 %% Comput thermoelectric properties
 fprintf('Computing thermoelectric properties ...\n');
@@ -176,8 +176,8 @@ e_cond_list = 1/resistivity/e_cond_at_seebeck.*e_cond_list.*1e2; % (arb. -> S/m)
 e_kappa_list = lorenz_list.*(kb)^2.*e_cond_list.*T; % (W/K-m) Electronic thermal conducitvity
 e_kappa_at_seebeck = interp1(fermi_list, e_kappa_list, fermi_at_seebeck); % (W/K-m) predicted measured electrical thermal conductivity
 
-% calculate the measured ZT
-if isempty(ZT)
+% calculate the measured zT
+if isempty(zT)
     % kappa is given as input
     
     switch kappa_option
@@ -194,11 +194,11 @@ if isempty(ZT)
             error('Invalid thermal conductivity option. Can only be "total" or "lattice"')
     end
     
-    ZT = 1/resistivity*1e2*seebeck_coeff.^2*T./kappa;
+    zT = 1/resistivity*1e2*seebeck_coeff.^2*T./kappa;
     
 else
-    % ZT is given as input
-    kappa = 1/resistivity*1e2*seebeck_coeff.^2*T./ZT;
+    % zT is given as input
+    kappa = 1/resistivity*1e2*seebeck_coeff.^2*T./zT;
     target_kappa_l = kappa - e_kappa_at_seebeck;
 end
 
@@ -209,7 +209,7 @@ end
 
 fprintf('--------------------------------------------------------\n');
 fprintf('Input material parameters summary\n\n')
-fprintf('ZT = %3f at T = %3f K\n\n', ZT, T);
+fprintf('zT = %.2f at T = %.2f K\n\n', zT, T);
 fprintf('Seebeck Coefficient             = %1.2e uV/K;  Resistivity                  = %1.2e Ohm-cm\n\n', seebeck_coeff*1e6, resistivity);
 fprintf('Total thermal conductivity      = %1.2e W/K-m;\n', target_kappa_l+e_kappa_at_seebeck);
 fprintf('Electronic thermal conductivity = %1.2e W/K-m; Lattice thermal conductivity = %1.2e W/K-m\n', e_kappa_at_seebeck, target_kappa_l);
@@ -218,7 +218,7 @@ fprintf('--------------------------------------------------------\n');
 
 % the range for b should be no less than specified b_min and (experimentally measure b * 0.5) and no more than b_max and (experimentally measured b * 1.5)
 target_b = T*kb^2/resistivity/target_kappa_l*1e2; % input b_l
-target_b_tot = ZT/(seebeck_coeff/kb)^2; % input b_total
+target_b_tot = zT/(seebeck_coeff/kb)^2; % input b_total
 
 if target_b*1.5 > max(b_range)
     b_range = [min(b_range) target_b*1.5];
@@ -237,9 +237,9 @@ if min(b_range) == max(b_range)
     error('b range minimum and maximum values cannot be the same.')
 end
 
-fprintf('Computing ZT vs. b ...\n');
+fprintf('Computing zT vs. b ...\n');
 
-%% Compute ZT vs. b by varying lattice conductivity
+%% Compute zT vs. b by varying lattice conductivity
 
 b_within_range = 0; % number of b data points within desired b range
 
@@ -253,14 +253,14 @@ while b_within_range < b_desired_number
     % Preallocation
     b_resolved       = zeros(length(kappa_l_list), length(fermi_list)); % Fermi energy resolved b_L at each kappa_l
     b_tot_resolved   = zeros(length(kappa_l_list), length(fermi_list)); % Fermi energy resolved b_total at each kappa_l
-    zt_resolved      = zeros(length(kappa_l_list), length(fermi_list)); % Fermi energy resolved ZT at each kappa_l
+    zt_resolved      = zeros(length(kappa_l_list), length(fermi_list)); % Fermi energy resolved zT at each kappa_l
     
-    zt_at_max     = zeros(1,length(kappa_l_list)); % max ZT at each kappa_l
-    b_at_max      = zeros(1,length(kappa_l_list)); % b_L at max ZT at each kappa_l
-    b_tot_at_max  = zeros(1,length(kappa_l_list)); % b_total at max ZT at each kappa_l 
-    s_at_max      = zeros(1,length(kappa_l_list)); % Seebeck coefficient at max ZT at each kappa_l
-    e_cond_at_max = zeros(1,length(kappa_l_list)); % conductivity at max ZT at each kappa_l
-    l_at_max      = zeros(1,length(kappa_l_list)); % Lorenz number at max ZT at each kappa_l
+    zt_at_max     = zeros(1,length(kappa_l_list)); % max zT at each kappa_l
+    b_at_max      = zeros(1,length(kappa_l_list)); % b_L at max zT at each kappa_l
+    b_tot_at_max  = zeros(1,length(kappa_l_list)); % b_total at max zT at each kappa_l 
+    s_at_max      = zeros(1,length(kappa_l_list)); % Seebeck coefficient at max zT at each kappa_l
+    e_cond_at_max = zeros(1,length(kappa_l_list)); % conductivity at max zT at each kappa_l
+    l_at_max      = zeros(1,length(kappa_l_list)); % Lorenz number at max zT at each kappa_l
     
     for kappa_l_index = 1:length(kappa_l_list)
         % for each kappa_l
@@ -269,20 +269,20 @@ while b_within_range < b_desired_number
         this_zt = (seebeck_list./kb).^2./(lorenz_list+1./this_b);
         this_b_tot = this_zt./(seebeck_list./kb).^2;
         
-        [~, index_at_max_zt] = max(this_zt); % locate a rough maximum ZT
+        [~, index_at_max_zt] = max(this_zt); % locate a rough maximum zT
         
         if index_at_max_zt == 1 || index_at_max_zt == length(this_zt)
-            % data is no longer reliable due to ZT_max being out of range
+            % data is no longer reliable due to zT_max being out of range
             break
         end
         
-        % energy resolved quantities (for plotting ZT vs. b load line)
+        % energy resolved quantities (for plotting zT vs. b load line)
         b_resolved(kappa_l_index,:) = this_b;
         b_tot_resolved(kappa_l_index,:) = this_b_tot;
         zt_resolved(kappa_l_index,:) = this_zt;
         
-        % obtain various quantities at max ZT (for plotting ZT vs. b)
-        % due to the sensitivity of ZT vs. b, refinement is sometimes needed to obtain a smooth curve
+        % obtain various quantities at max zT (for plotting zT vs. b)
+        % due to the sensitivity of zT vs. b, refinement is sometimes needed to obtain a smooth curve
         % interpolate to the maximum value via SPline instead of taking a simple maximum of existing data
         refined_e_grid = linspace(fermi_list(index_at_max_zt-1), fermi_list(index_at_max_zt+1),1000);
         
@@ -310,11 +310,11 @@ while b_within_range < b_desired_number
     kappa_l_upper = kappa_l_list(find(b_within_range_list == 1, 1, 'last')+1); % new kappa_l upper limit
 end
 
-% quantities at max ZT that can be calculated from others
+% quantities at max zT that can be calculated from others
 kappa_l_at_max = T*kb^2.*e_cond_at_max./b_at_max; % (W/K-m) lattice thermal conductivity
 kappa_e_at_max = l_at_max.*kb^2.*e_cond_at_max; % (W/K-m) electronic thermal conductivity
 
-% Locate the measured data load lines in the ZT vs. b plot
+% Locate the measured data load lines in the zT vs. b plot
 zt_ll    = interp1(kappa_l_list, zt_resolved, target_kappa_l);
 b_ll     = interp1(kappa_l_list, b_resolved, target_kappa_l);
 b_tot_ll = interp1(kappa_l_list, b_tot_resolved, target_kappa_l);
@@ -323,38 +323,38 @@ b_tot_ll = interp1(kappa_l_list, b_tot_resolved, target_kappa_l);
 fig_num = 1;
 
 %-----------------------------------
-% Plot #1: ZT|_{max} vs. b_l
+% Plot #1: zT|_{max} vs. b_l
 %-----------------------------------
 
 figure(fig_num); fig_num = fig_num+1;
 
-plot(b_at_max, zt_at_max,'-'); % ZT|_{max} vs. b_l
+plot(b_at_max, zt_at_max,'-'); % zT|_{max} vs. b_l
 hold on
 plot(b_ll, zt_ll,'--r');
-plot(target_b, ZT,'o','MarkerFaceColor','red');
+plot(target_b, zT,'o','MarkerFaceColor','red');
 
-legend('ZT|_{max}', ['\kappa_{L}=' sprintf('%1.2f W/K-m',target_kappa_l)], 'Input')
+legend('zT|_{max}', ['\kappa_{L}=' sprintf('%1.2f W/K-m',target_kappa_l)], 'Input')
 
 xlabel('b_L')
-ylabel('ZT|_{max}')
-plot_setup(b_at_max, zt_at_max, ZT,'');
+ylabel('zT|_{max}')
+plot_setup(b_at_max, zt_at_max, zT,'');
 
 %-----------------------------------
-% Plot #2: ZT|_{max} vs. b_total
+% Plot #2: zT|_{max} vs. b_total
 %-----------------------------------
 
 figure(fig_num); fig_num = fig_num+1;
 
-plot(b_tot_at_max, zt_at_max,'-'); % ZT|_{max} vs. b_l
+plot(b_tot_at_max, zt_at_max,'-'); % zT|_{max} vs. b_l
 hold on
 plot(b_tot_ll, zt_ll,'--r');
-plot(target_b_tot, ZT,'o','MarkerFaceColor','red');
+plot(target_b_tot, zT,'o','MarkerFaceColor','red');
 
-legend('ZT|_{max}', ['\kappa_{tot}=' sprintf('%1.2f',kappa)], 'Input')
+legend('zT|_{max}', ['\kappa_{tot}=' sprintf('%1.2f',kappa)], 'Input')
 
 xlabel('b_{total}')
-ylabel('ZT|_{max}')
-plot_setup(b_tot_at_max, zt_at_max, ZT,'');
+ylabel('zT|_{max}')
+plot_setup(b_tot_at_max, zt_at_max, zT,'');
 
 %-----------------------------------
 % Plot #3: Seebeck coefficient vs. b
@@ -366,7 +366,7 @@ plot(b_at_max, s_at_max.*1e6, '-')
 hold on
 plot(target_b, seebeck_coeff*1e6, 'o','MarkerFaceColor','red')
 
-legend('@ZT|_{max}', 'Input')
+legend('@zT|_{max}', 'Input')
 
 xlabel('b_L')
 ylabel('|Seebeck coefficient| (uV/k)')
@@ -382,7 +382,7 @@ semilogy(b_at_max, 1./e_cond_at_max.*1e2, '-')
 hold on
 plot(target_b, resistivity, 'o','MarkerFaceColor','red')
 
-legend('@ZT|_{max}','Input')
+legend('@zT|_{max}','Input')
 
 xlabel('b_L')
 ylabel('Resistivity (\Omega-cm)')
@@ -403,7 +403,7 @@ plot(target_b, target_kappa_l, 's','MarkerFaceColor','blue')
 plot(target_b, e_kappa_at_seebeck, '<','MarkerFaceColor','red')
 plot(target_b, kappa, 'o','MarkerFaceColor','green')
 
-legend('kappa_l @ZT|_{max}','kappa_e @ZT|_{max}','kappa_{total} @ZT|_{max}','Input kappa_l','Input kappa_e','Input kappa_{total}')
+legend('\kappa_l @zT|_{max}','\kappa_e @zT|_{max}','\kappa_{total} @zT|_{max}','Input \kappa_l','Input \kappa_e','Input \kappa_{total}')
 
 xlabel('b_L')
 ylabel('Thermal conductivity (W/K-m)')
@@ -419,7 +419,7 @@ plot(b_at_max, l_at_max, '-')
 hold on
 plot(target_b, e_kappa_at_seebeck*resistivity*1e-2/(kb^2)/T,'o','MarkerFaceColor','red')
 
-legend('L @ZT|_{max}','Input')
+legend('L @zT|_{max}','Input')
 
 xlabel('b_L')
 ylabel('Lorenz number (/(k_B/q)^2)')
