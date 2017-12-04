@@ -1,4 +1,4 @@
-# zT_vs_b
+# zT(b)
 
 Plots zT vs. b and locate measurement data on the plot.
 
