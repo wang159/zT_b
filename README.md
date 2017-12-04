@@ -60,7 +60,7 @@ Figure 6: Lorenz number vs. b
 
 This function is written by
 
-Authors: Xufeng Wang, Evan Witkosk, and Mark Lundstrom
+Authors: Xufeng Wang, Evan Witkoske, and Mark Lundstrom
 
 Contact: lundstro@ecn.purdue.edu
 
